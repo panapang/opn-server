@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.post('/users/', function (req, res) {
     let data = req.body;
-    data['table'] = 'user';
+    data['table'] = 'users';
 
     db.insert(data, function (err, newDoc) {
         res.json(newDoc);
@@ -35,7 +35,7 @@ app.post('/users/:id', function (req, res) {
 
 app.delete('/users/:id', function (req, res) {
     db.remove({ _id: req.params.id }, {}, function (err, numRemoved) {
-        db.find({ table: 'user' }).exec(function (err, docs) {
+        db.find({ table: 'users' }).exec(function (err, docs) {
             if (err) {
                 res.statusCode = 404;
                 res.json(err);
@@ -52,7 +52,7 @@ app.delete('/users/:id', function (req, res) {
 
 app.get('/users/', function (req, res) {
   if(req.query.name) {
-    db.find({ table: 'user', name: /req.query.name/ }).sort({ name: 1 }).exec(function (err, docs) {
+    db.find({ table: 'users', name: /req.query.name/ }).sort({ name: 1 }).exec(function (err, docs) {
       if (err) {
           res.statusCode = 404;
           res.json(err);
@@ -61,7 +61,7 @@ app.get('/users/', function (req, res) {
       res.json(docs);
     });
   } else {
-    db.find({ table: 'user' }).exec(function (err, docs) {
+    db.find({ table: 'users' }).exec(function (err, docs) {
         if (err) {
             res.statusCode = 404;
             res.json(err);
@@ -73,7 +73,7 @@ app.get('/users/', function (req, res) {
 });
 
 app.get('/users/:id', function (req, res) {
-    db.findOne({ table: 'user', _id: req.params.id }).sort({ id: 1 }).exec(function (err, docs) {
+    db.findOne({ table: 'users', _id: req.params.id }).sort({ id: 1 }).exec(function (err, docs) {
         if (err) {
             res.statusCode = 404;
             res.json(err);
@@ -81,6 +81,41 @@ app.get('/users/:id', function (req, res) {
 
         res.json(docs);
     });
+});
+
+
+
+//Timeline
+app.get('/Timelines/', function (req, res) {
+  db.find({ table: 'timelines' }).exec(function (err, docs) {
+      if (err) {
+          res.statusCode = 404;
+          res.json(err);
+      };
+
+      res.json(docs);
+  });
+});
+
+app.post('/timelines/', function (req, res) {
+  let data = req.body;
+  data['table'] = 'timelines';
+
+  db.insert(data, function (err, newDoc) {
+      res.json(newDoc);
+  })
+});
+
+//Area
+app.get('/areas/', function (req, res) {
+  db.find({ table: 'areas' }).exec(function (err, docs) {
+      if (err) {
+          res.statusCode = 404;
+          res.json(err);
+      };
+
+      res.json(docs);
+  });
 });
 
 var server = app.listen(3001, function () {
